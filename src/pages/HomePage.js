@@ -4,19 +4,19 @@ import MovieList from "../components/movie/MovieList"
 const HomePage = () => {
   return (
     <div>
-      <section className="movies-layout">
+      <section className="movies-layout page-container">
         <h2 className="capitalize text-white font-bold mb-5 text-3xl ">
           Now playing
         </h2>
         <MovieList />
       </section>
-      <section className="movies-layout">
+      <section className="movies-layout page-container">
         <h2 className="capitalize text-white font-bold mb-5 text-3xl ">
           Top rating
         </h2>
         <MovieList type="top_rated" />
       </section>
-      <section className="movies-layout">
+      <section className="movies-layout page-container">
         <h2 className="capitalize text-white font-bold mb-5 text-3xl ">
           Popular
         </h2>

@@ -1,7 +1,10 @@
 /* eslint-disable array-callback-return */
 import React from "react"
 import { useParams } from "react-router-dom"
+import { Swiper, SwiperSlide } from "swiper/react"
+import "swiper/scss"
 import useSWR from "swr"
+import MovieCard from "../components/movie/MovieCard"
 import { API_KEY, fetcher } from "../config/config"
 
 const MovieDetailsPage = () => {
@@ -50,8 +53,9 @@ const MovieDetailsPage = () => {
           })}
       </div>
       <p className="pt-10 max-w-[700px] mx-auto leading-7 ">{overview}</p>
-      <MovieCast></MovieCast>
-      <MovieVideo></MovieVideo>
+      <MovieCast />
+      <MovieVideo />
+      <MovieSimilar />
     </div>
   )
 }
@@ -95,18 +99,62 @@ function MovieCast() {
 
 function MovieVideo() {
   const { movieId } = useParams()
-
   const { data } = useSWR(
     `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US`,
     fetcher
   )
+
   if (!data) return null
-  console.log(
-    "🚀 ~ file: MovieDetailsPage.js ~ line 100 ~ MovieVideo ~ data",
-    data
+  const {
+    results
+  } = data
+
+  if (!results || results.length <= 0) return null
+
+  return <div className="flex flex-col gap-10">
+    {
+      results.map((item, index) => {
+        if (index <= 3)
+          return (
+            <div key={item.id}>
+              <h3 className="mb-5 text-xl font-medium p-3 pl-0 text-secondary inline-block">{item.name}</h3>
+              <div className="w-full aspect-video">
+                <iframe width="1280" height="800" src={`https://www.youtube.com/embed/${item.key}`} title={`${item.name}`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullscreen></iframe>
+              </div>
+            </div>
+          )
+      })
+    }
+  </div >
+}
+
+function MovieSimilar() {
+  const { movieId } = useParams()
+  const { data } = useSWR(
+    `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${API_KEY}&language=en-US`,
+    fetcher
   )
 
-  // <iframe width="1280" height="720" src="https://www.youtube.com/embed/b6wC02UKC68" title="MU chiến thắng ngày Ronaldo được cho dự bị | TỔ BUÔN 247 (23/08/2022)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  if (!data) return null
+  const { results } = data
 
-  return <div></div>
+  if (!results || results.length <= 0) return null
+
+  return (
+    <div className="pt-10">
+      <h3 className="text-xl font-meidum p-3 pl-0">Similar movie</h3>
+      <div className="movie-similar">
+        <Swiper grabCursor={"true"} spaceBetween={40} slidesPerView={"auto"}>
+          {results.length > 0 &&
+            results.map((item) => {
+              return (
+                <SwiperSlide key={item.id}>
+                  <MovieCard item={item} />
+                </SwiperSlide>
+              )
+            })}
+        </Swiper>
+      </div>
+    </div>
+  )
 }

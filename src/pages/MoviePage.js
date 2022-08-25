@@ -12,7 +12,7 @@ const MoviePage = () => {
   const movies = data?.results || []
 
   return (
-    <div>
+    <div className="page-container">
       <div className="flex gap-x-5 py-10">
         <input
           type="text"
