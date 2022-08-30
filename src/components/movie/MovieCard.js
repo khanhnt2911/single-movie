@@ -2,6 +2,7 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import { TMDB_API } from "../../config/config"
 import Button from "../button/Button"
+import PropTypes from 'prop-types'
 
 const MovieCard = ({ item }) => {
   const { title, vote_average, poster_path, release_date, id } = item
@@ -24,6 +25,12 @@ const MovieCard = ({ item }) => {
       </div>
     </div >
   )
+}
+
+MovieCard.propTypes = {
+  item: PropTypes.shape({
+    title: PropTypes.string, vote_average: PropTypes.number, poster_path: PropTypes.string, release_date: PropTypes.string, id: PropTypes.string
+  })
 }
 
 export default MovieCard
