@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import ReactPaginate from 'react-paginate'
 import useSWR from "swr"
-import MovieCard from "components/movie/MovieCard"
-import { fetcher, TMDB_API } from "config/config"
-import useDebounce from "hooks/useDebounce"
+import MovieCard from "../components/movie/MovieCard"
+import { fetcher, TMDB_API } from "../config/config"
+import useDebounce from "../hooks/useDebounce"
 
 // search
 // https://api.themoviedb.org/3/search/movie?api_key=b2bfd7a8fd6001ec78e71956b1a29faa&language=en-US&page=1&include_adult=false
