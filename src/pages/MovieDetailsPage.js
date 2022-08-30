@@ -5,13 +5,13 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import "swiper/scss"
 import useSWR from "swr"
 import MovieCard from "../components/movie/MovieCard"
-import { API_KEY, fetcher } from "../config/config"
+import { fetcher, TMDB_API } from "../config/config"
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams()
 
   const { data } = useSWR(
-    `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=en-US`,
+    TMDB_API.getMovieDetails(movieId),
     fetcher
   )
 
@@ -25,13 +25,13 @@ const MovieDetailsPage = () => {
         <div
           className="w-full h-full bg-cover bg-no-repeat"
           style={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/original/${backdrop_path})`,
+            backgroundImage: `url(${TMDB_API.imageOriginal(backdrop_path)})`,
           }}
         ></div>
       </div>
       <div className="w-full max-w-[800px] h-[400px] mx-auto -mt-[200px] relative pb-20">
         <img
-          src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+          src={TMDB_API.imageOriginal(poster_path)}
           alt=""
           className="w-full h-full object-cover rounded-xl"
         />
@@ -53,7 +53,7 @@ const MovieDetailsPage = () => {
           })}
       </div>
       <p className="pt-10 max-w-[700px] mx-auto leading-7 ">{overview}</p>
-      <MovieCast />
+      <MovieCredit />
       <MovieVideo />
       <MovieSimilar />
     </div>
@@ -62,11 +62,11 @@ const MovieDetailsPage = () => {
 
 export default MovieDetailsPage
 
-function MovieCast() {
+function MovieCredit() {
   const { movieId } = useParams()
 
   const { data } = useSWR(
-    `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}&language=en-US`,
+    TMDB_API.getMovieMeta(movieId, 'credits'),
     fetcher
   )
   if (!data) return null
@@ -84,7 +84,7 @@ function MovieCast() {
             return (
               <div key={item.id}>
                 <img
-                  src={`https://image.tmdb.org/t/p/original/${item.profile_path}`}
+                  src={TMDB_API.imageOriginal(item.profile_path)}
                   alt={item.original_name}
                   className="rounded-xl w-full h-[350px] object-cover mb-3"
                 />
@@ -100,7 +100,7 @@ function MovieCast() {
 function MovieVideo() {
   const { movieId } = useParams()
   const { data } = useSWR(
-    `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US`,
+    TMDB_API.getMovieMeta(movieId, 'videos'),
     fetcher
   )
 
@@ -119,7 +119,7 @@ function MovieVideo() {
             <div key={item.id}>
               <h3 className="mb-5 text-xl font-medium p-3 pl-0 text-secondary inline-block">{item.name}</h3>
               <div className="w-full aspect-video">
-                <iframe width="1280" height="800" src={`https://www.youtube.com/embed/${item.key}`} title={`${item.name}`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullscreen></iframe>
+                <iframe width="1280" height="800" src={`https://www.youtube.com/embed/${item.key}`} title={`${item.name}`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
               </div>
             </div>
           )
@@ -131,7 +131,7 @@ function MovieVideo() {
 function MovieSimilar() {
   const { movieId } = useParams()
   const { data } = useSWR(
-    `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${API_KEY}&language=en-US`,
+    TMDB_API.getMovieMeta(movieId, 'similar'),
     fetcher
   )
 

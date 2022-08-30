@@ -2,6 +2,8 @@ import useSWR from "swr"
 import { Swiper, SwiperSlide } from "swiper/react"
 import React from "react"
 import { fetcher } from "../../config/config"
+import Button from "../button/Button"
+import { useNavigate } from "react-router-dom"
 
 const Banner = ({ type = "now_playing" }) => {
   const { data } = useSWR(
@@ -27,7 +29,8 @@ const Banner = ({ type = "now_playing" }) => {
 }
 
 function BannerItem({ item }) {
-  const { title, poster_path } = item
+  const { title, poster_path, id } = item
+  const navigate = useNavigate()
 
   return (
     <div className="banner h-[500px] page-container mb-20">
@@ -51,9 +54,7 @@ function BannerItem({ item }) {
               Adventures
             </span>
           </div>
-          <button className="py-3 px-6 bg-primary text-white rounded-lg font-medium">
-            Watch now
-          </button>
+          <Button onClick={() => navigate(`/movie/${id}`)}>Watch now</Button>
         </div>
       </div>
     </div>
