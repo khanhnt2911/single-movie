@@ -5,15 +5,12 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import "swiper/scss"
 import useSWR from "swr"
 import MovieCard from "../components/movie/MovieCard"
-import { fetcher, TMDB_API } from "../config/config"
+import { fetcher, MDB_API } from "../config/config"
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams()
 
-  const { data } = useSWR(
-    TMDB_API.getMovieDetails(movieId),
-    fetcher
-  )
+  const { data } = useSWR(MDB_API.getMovieDetails(movieId), fetcher)
 
   if (!data) return null
   const { backdrop_path, poster_path, title, genres, overview } = data
@@ -25,13 +22,13 @@ const MovieDetailsPage = () => {
         <div
           className="w-full h-full bg-cover bg-no-repeat"
           style={{
-            backgroundImage: `url(${TMDB_API.imageOriginal(backdrop_path)})`,
+            backgroundImage: `url(${MDB_API.imageOriginal(backdrop_path)})`,
           }}
         ></div>
       </div>
       <div className="w-full max-w-[800px] h-[400px] mx-auto -mt-[200px] relative pb-20">
         <img
-          src={TMDB_API.imageOriginal(poster_path)}
+          src={MDB_API.imageOriginal(poster_path)}
           alt=""
           className="w-full h-full object-cover rounded-xl"
         />
@@ -65,10 +62,7 @@ export default MovieDetailsPage
 function MovieCredit() {
   const { movieId } = useParams()
 
-  const { data } = useSWR(
-    TMDB_API.getMovieMeta(movieId, 'credits'),
-    fetcher
-  )
+  const { data } = useSWR(MDB_API.getMovieMeta(movieId, "credits"), fetcher)
   if (!data) return null
 
   const { cast } = data
@@ -84,7 +78,7 @@ function MovieCredit() {
             return (
               <div key={item.id}>
                 <img
-                  src={TMDB_API.imageOriginal(item.profile_path)}
+                  src={MDB_API.imageOriginal(item.profile_path)}
                   alt={item.original_name}
                   className="rounded-xl w-full h-[350px] object-cover mb-3"
                 />
@@ -99,41 +93,43 @@ function MovieCredit() {
 
 function MovieVideo() {
   const { movieId } = useParams()
-  const { data } = useSWR(
-    TMDB_API.getMovieMeta(movieId, 'videos'),
-    fetcher
-  )
+  const { data } = useSWR(MDB_API.getMovieMeta(movieId, "videos"), fetcher)
 
   if (!data) return null
-  const {
-    results
-  } = data
+  const { results } = data
 
   if (!results || results.length <= 0) return null
 
-  return <div className="flex flex-col gap-10">
-    {
-      results.map((item, index) => {
+  return (
+    <div className="flex flex-col gap-10">
+      {results.map((item, index) => {
         if (index <= 3)
           return (
             <div key={item.id}>
-              <h3 className="mb-5 text-xl font-medium p-3 pl-0 text-secondary inline-block">{item.name}</h3>
+              <h3 className="mb-5 text-xl font-medium p-3 pl-0 text-secondary inline-block">
+                {item.name}
+              </h3>
               <div className="w-full aspect-video">
-                <iframe width="1280" height="800" src={`https://www.youtube.com/embed/${item.key}`} title={`${item.name}`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                <iframe
+                  width="1280"
+                  height="800"
+                  src={`https://www.youtube.com/embed/${item.key}`}
+                  title={`${item.name}`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
               </div>
             </div>
           )
-      })
-    }
-  </div >
+      })}
+    </div>
+  )
 }
 
 function MovieSimilar() {
   const { movieId } = useParams()
-  const { data } = useSWR(
-    TMDB_API.getMovieMeta(movieId, 'similar'),
-    fetcher
-  )
+  const { data } = useSWR(MDB_API.getMovieMeta(movieId, "similar"), fetcher)
 
   if (!data) return null
   const { results } = data

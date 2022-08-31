@@ -3,13 +3,10 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import MovieCard from "./MovieCard"
 import "swiper/scss"
 import useSWR from "swr"
-import { fetcher, TMDB_API } from "../../config/config"
+import { fetcher, MDB_API } from "../../config/config"
 
 const MovieList = ({ type = "now_playing" }) => {
-  const { data } = useSWR(
-    TMDB_API.getMovieList(type),
-    fetcher
-  )
+  const { data } = useSWR(MDB_API.getMovieList(type), fetcher)
 
   const movies = data?.results || []
 

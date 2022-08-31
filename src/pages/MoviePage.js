@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
-import ReactPaginate from 'react-paginate'
+import ReactPaginate from "react-paginate"
 import useSWR from "swr"
 import MovieCard from "../components/movie/MovieCard"
-import { fetcher, TMDB_API } from "../config/config"
+import { fetcher, MDB_API } from "../config/config"
 import useDebounce from "../hooks/useDebounce"
 
 // search
@@ -13,14 +13,11 @@ const itemsPerPage = 20
 
 const MoviePage = () => {
   const [nextPage, setNextPage] = useState(1)
-  const [pageCount, setPageCount] = useState(0);
-  const [itemOffset, setItemOffset] = useState(0);
-  const [filter, setFilter] = useState('')
-  const [url, setUrl] = useState(TMDB_API.getMovieList('popular', nextPage))
-  const { data, error } = useSWR(
-    url,
-    fetcher
-  )
+  const [pageCount, setPageCount] = useState(0)
+  const [itemOffset, setItemOffset] = useState(0)
+  const [filter, setFilter] = useState("")
+  const [url, setUrl] = useState(MDB_API.getMovieList("popular", nextPage))
+  const { data, error } = useSWR(url, fetcher)
 
   const loading = !data && !error
 
@@ -28,10 +25,8 @@ const MoviePage = () => {
 
   useEffect(() => {
     if (filterDebounce) {
-      setUrl(TMDB_API.getMovieSearch(filterDebounce, nextPage))
-    } else (
-      setUrl(TMDB_API.getMovieList('popular', nextPage))
-    )
+      setUrl(MDB_API.getMovieSearch(filterDebounce, nextPage))
+    } else setUrl(MDB_API.getMovieList("popular", nextPage))
   }, [filterDebounce, nextPage])
 
   // if (!data) return null
@@ -44,14 +39,14 @@ const MoviePage = () => {
 
   useEffect(() => {
     if (!data || !data.total_results) return
-    setPageCount(Math.ceil(data.total_results / itemsPerPage));
-  }, [data, itemOffset]);
+    setPageCount(Math.ceil(data.total_results / itemsPerPage))
+  }, [data, itemOffset])
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % data.total_results;
-    setItemOffset(newOffset);
+    const newOffset = (event.selected * itemsPerPage) % data.total_results
+    setItemOffset(newOffset)
     setNextPage(event.selected + 1)
-  };
+  }
 
   return (
     <div className="page-container">
@@ -79,23 +74,34 @@ const MoviePage = () => {
           </svg>
         </button>
       </div>
-      {
-        loading ? (<div className="w-10 h-10 rounded-full border-4 border-t-transparent border-primary border-t-4 mx-auto animate-spin"></div>) : (
-          <div className="grid grid-cols-4 gap-10">
-            {movies.length > 0 &&
-              movies.map((item) => {
-                return <MovieCard item={item} key={item.id} />
-              })}
-          </div>
-        )
-      }
+      {loading ? (
+        <div className="w-10 h-10 rounded-full border-4 border-t-transparent border-primary border-t-4 mx-auto animate-spin"></div>
+      ) : (
+        <div className="grid grid-cols-4 gap-10">
+          {movies.length > 0 &&
+            movies.map((item) => {
+              return <MovieCard item={item} key={item.id} />
+            })}
+        </div>
+      )}
       <div className="flex justify-center items-center gap-x-5 my-10">
         <ReactPaginate
           breakLabel="..."
           nextLabel={
             <span className="cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
               </svg>
             </span>
           }
@@ -104,13 +110,24 @@ const MoviePage = () => {
           pageCount={pageCount}
           previousLabel={
             <span className="cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
               </svg>
             </span>
           }
           renderOnZeroPageCount={null}
-          className='pagination'
+          className="pagination"
         />
       </div>
     </div>
